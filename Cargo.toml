@@ -1,0 +1,11 @@
+[package]
+name = "r-dna2"
+description = "A Rust implementation of AMD RDNA2 GPU architecture."
+version = "0.1.0"
+edition = "2024"
+authors = ["Necmi Hasan"]
+readme = "README.md"
+repository = "https://github.com/necmih/r-dna2"
+license-file = "LICENSE"
+
+[dependencies]
