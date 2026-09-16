@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/cli"]
+members = ["crates/cli", "crates/isa"]
 
 [workspace.package]
 name = "r-dna2"
