@@ -113,4 +113,9 @@ mod tests {
 
         assert_eq!(sop1.ssrc0, Operand::Literal(0x12345678));
     }
+
+    #[test]
+    fn decode_truncated_literal() {
+        assert_eq!(decode(&[0xBE8003FF]), None);
+    }
 }
