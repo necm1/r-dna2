@@ -19,7 +19,8 @@ pub enum Operand {
     Vccz,               // 251
     Execz,              // 252
     Scc,                // 253
-    Literal(u32),       // 255
+    LiteralPending,     // 255 marker - value in next including decoder will replace to Literal(u32)
+    Literal(u32),       // returned by decoder
     Vgpr(u16),          // 0 - 255 ^ & 256 - 511 VGPR
 }
 
@@ -46,7 +47,7 @@ impl Operand {
             251 => Operand::Vccz,
             252 => Operand::Execz,
             253 => Operand::Scc,
-            255 => Operand::Literal(value),
+            255 => Operand::LiteralPending,
             256..=511 => Operand::Vgpr((value - 256) as u16),
             _ => panic!("Invalid operand value: {}", value),
         }
@@ -88,7 +89,7 @@ mod tests {
             Operand::decode(248),
             Operand::InlineFloat(f32::from_bits(0x3E22F983))
         );
-        assert_eq!(Operand::decode(255), Operand::Literal(255));
+        assert_eq!(Operand::decode(255), Operand::LiteralPending);
         assert_eq!(Operand::decode(256), Operand::Vgpr(0));
         assert_eq!(Operand::decode(511), Operand::Vgpr(255));
     }
