@@ -9,6 +9,9 @@ version = "0.1.0"
 [[package]]
 name = "r-dna2-emu"
 version = "0.1.0"
+dependencies = [
+ "r-dna2-isa",
+]
 
 [[package]]
 name = "r-dna2-isa"
