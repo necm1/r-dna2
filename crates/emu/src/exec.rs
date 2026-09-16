@@ -1,6 +1,6 @@
 use r_dna2_isa::decode::{Instruction, decode};
 
-use crate::alu::scalar;
+use crate::alu::{scalar, vector};
 use crate::flow;
 use crate::wave::Wave;
 
@@ -31,6 +31,11 @@ pub fn step(wave: &mut Wave, program: &[u32]) -> Step {
             Step::Continue
         }
         Instruction::Sopp(i) => flow::exec_sopp(wave, program, &i, len),
+        Instruction::Vop1(i) => {
+            vector::exec_vop1(wave, &i);
+            wave.pc += len;
+            Step::Continue
+        }
     }
 }
 
@@ -145,5 +150,17 @@ pub mod tests {
         wave.sgpr[2] = 32;
         run(&mut wave, &[0xBF0E0200, 0xBF810000]);
         assert!(!wave.scc);
+    }
+
+    #[test]
+    fn test_exec_mask_limits_vector_write() {
+        let mut wave = Wave::new();
+        wave.exec = 0x0000_FFFF;
+        run(&mut wave, &[0x7E000287, 0xBF810000]);
+
+        assert_eq!(wave.vgpr[0][0], 7);
+        assert_eq!(wave.vgpr[0][15], 7);
+        assert_eq!(wave.vgpr[0][16], 0);
+        assert_eq!(wave.vgpr[0][31], 0);
     }
 }
