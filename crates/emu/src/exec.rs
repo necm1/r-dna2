@@ -37,34 +37,13 @@ pub fn step(wave: &mut Wave, program: &[u32]) -> Step {
                 return Step::EndPgm;
             }
             sopp::SoppOp::SBranch => {
-                let simm16 = inst.simm16;
-
-                let new_pc = (wave.pc as i64 + 1 + simm16 as i64) as usize;
-
-                if new_pc >= program.len() {
-                    panic!(
-                        "Branch target out of bounds: pc={}, target={}",
-                        wave.pc, new_pc
-                    );
-                }
-
-                wave.pc = new_pc;
+                branch(wave, program, inst.simm16);
 
                 return Step::Continue;
             }
             sopp::SoppOp::SCBranchScc0 => {
                 if !wave.scc {
-                    let simm16 = inst.simm16;
-                    let new_pc = (wave.pc as i64 + 1 + simm16 as i64) as usize;
-
-                    if new_pc >= program.len() {
-                        panic!(
-                            "Branch target out of bounds: pc={}, target={}",
-                            wave.pc, new_pc
-                        );
-                    }
-
-                    wave.pc = new_pc;
+                    branch(wave, program, inst.simm16);
                 } else {
                     wave.pc += len;
                 }
@@ -73,17 +52,7 @@ pub fn step(wave: &mut Wave, program: &[u32]) -> Step {
             }
             sopp::SoppOp::SCBranchScc1 => {
                 if wave.scc {
-                    let simm16 = inst.simm16;
-                    let new_pc = (wave.pc as i64 + 1 + simm16 as i64) as usize;
-
-                    if new_pc >= program.len() {
-                        panic!(
-                            "Branch target out of bounds: pc={}, target={}",
-                            wave.pc, new_pc
-                        );
-                    }
-
-                    wave.pc = new_pc;
+                    branch(wave, program, inst.simm16);
                 } else {
                     wave.pc += len;
                 }
@@ -118,6 +87,19 @@ pub fn step(wave: &mut Wave, program: &[u32]) -> Step {
     } else {
         panic!("Unknown instruction at pc={}", wave.pc)
     }
+}
+
+fn branch(wave: &mut Wave, program: &[u32], simm16: i16) {
+    let new_pc = (wave.pc as i64 + 1 + simm16 as i64) as usize;
+
+    if new_pc >= program.len() {
+        panic!(
+            "Branch target out of bounds: pc={}, target={}",
+            wave.pc, new_pc
+        );
+    }
+
+    wave.pc = new_pc;
 }
 
 pub fn read(wave: &Wave, operand: Operand) -> u32 {
