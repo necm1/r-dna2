@@ -1,4 +1,4 @@
-use crate::fmt::{sop1, sop2, sopc, sopp};
+use crate::fmt::{sop1, sop2, sopc, sopp, vop1};
 
 #[derive(Debug, PartialEq)]
 pub enum Instruction {
@@ -6,6 +6,7 @@ pub enum Instruction {
     Sop2(sop2::Sop2),
     Sopc(sopc::Sopc),
     Sopp(sopp::Sopp),
+    Vop1(vop1::Vop1),
 }
 
 pub fn decode(words: &[u32]) -> Option<(Instruction, usize)> {
@@ -14,4 +15,5 @@ pub fn decode(words: &[u32]) -> Option<(Instruction, usize)> {
         .or_else(|| sopc::decode(words).map(|(inst, len)| (Instruction::Sopc(inst), len)))
         .or_else(|| sopp::decode(words).map(|(inst, len)| (Instruction::Sopp(inst), len)))
         .or_else(|| sop2::decode(words).map(|(inst, len)| (Instruction::Sop2(inst), len)))
+        .or_else(|| vop1::decode(words).map(|(inst, len)| (Instruction::Vop1(inst), len)))
 }

@@ -2,6 +2,7 @@ pub mod sop1;
 pub mod sop2;
 pub mod sopc;
 pub mod sopp;
+pub mod vop1;
 
 macro_rules! opcodes {
     ($name:ident { $($code:literal => $variant:ident,)+ }) => {
