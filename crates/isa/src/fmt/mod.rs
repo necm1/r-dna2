@@ -1,4 +1,5 @@
 pub mod sop1;
+pub mod sop2;
 pub mod sopp;
 
 macro_rules! opcodes {
